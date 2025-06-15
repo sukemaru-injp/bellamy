@@ -1,4 +1,4 @@
-import CalendarView from '@/components/CalendarView';
+import CalendarView from '@/components/calendar/CalendarView';
 import { StyleSheet, View } from 'react-native';
 
 export default function CalendarScreen() {
