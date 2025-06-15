@@ -58,7 +58,14 @@ const getTheme = (themeColor: string): Theme => ({
 	textDayHeaderFontWeight: '300',
 	textDayFontSize: 16,
 	textMonthFontSize: 16,
-	textDayHeaderFontSize: 14
+	textDayHeaderFontSize: 14,
+	stylesheet: {
+		day: {
+			basic: {
+				flex: 1
+			}
+		}
+	}
 });
 
 export default function CalendarView() {
@@ -104,6 +111,8 @@ export default function CalendarView() {
 				}}
 				markedDates={oshiMarkedDates[selectedOshiId]}
 				theme={theme}
+				showSixWeeks
+				hideExtraDays={false}
 			/>
 		</View>
 	);
@@ -121,14 +130,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	picker: {
-		height: 40,
+		height: 55,
 		width: '90%',
 		alignSelf: 'center'
 	},
 	pickerItem: {
 		color: '#fff',
-		backgroundColor: '#333',
-		padding: 2
+		backgroundColor: '#333'
 	},
 	calendar: {
 		borderTopWidth: 1,
