@@ -1,11 +1,11 @@
+import { colors } from '@/styles/foundation';
 import Feather from '@expo/vector-icons/Feather';
 import { Tabs } from 'expo-router';
-
 export default function RootLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarActiveTintColor: '#ffd33d'
+				tabBarActiveTintColor: colors.main
 			}}
 		>
 			<Tabs.Screen

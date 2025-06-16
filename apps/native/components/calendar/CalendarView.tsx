@@ -1,4 +1,5 @@
 import type { Oshi } from '@/models/Oshi';
+import { colors } from '@/styles/foundation';
 import { Picker } from '@react-native-picker/picker';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -40,18 +41,18 @@ const oshiMarkedDates: Record<Oshi['id'], { [key: string]: MarkingProps }> = {
 };
 
 const getTheme = (themeColor: string): Theme => ({
-	backgroundColor: '#222',
-	calendarBackground: '#222',
-	textSectionTitleColor: '#b6c1cd',
+	backgroundColor: colors.background,
+	calendarBackground: colors.background,
+	textSectionTitleColor: colors.main,
 	selectedDayBackgroundColor: themeColor,
 	selectedDayTextColor: '#ffffff',
 	todayTextColor: themeColor,
-	dayTextColor: '#d9e1e8',
+	dayTextColor: colors.main,
 	textDisabledColor: '#555',
 	dotColor: themeColor,
 	selectedDotColor: '#ffffff',
 	arrowColor: themeColor,
-	monthTextColor: '#fff',
+	monthTextColor: colors.main,
 	indicatorColor: themeColor,
 	textDayFontWeight: '300',
 	textMonthFontWeight: 'bold',
@@ -121,12 +122,12 @@ export default function CalendarView() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#222'
+		backgroundColor: colors.background
 	},
 	oshiSelectorContainer: {
 		paddingVertical: 10,
 		borderBottomWidth: 1,
-		borderColor: '#333',
+		borderColor: colors.background,
 		justifyContent: 'center'
 	},
 	picker: {
@@ -136,12 +137,12 @@ const styles = StyleSheet.create({
 	},
 	pickerItem: {
 		color: '#fff',
-		backgroundColor: '#333'
+		backgroundColor: colors.background
 	},
 	calendar: {
 		borderTopWidth: 1,
 		paddingTop: 5,
 		borderBottomWidth: 1,
-		borderColor: '#333'
+		borderColor: colors.main
 	}
 });
