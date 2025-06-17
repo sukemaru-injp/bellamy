@@ -1,14 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Link, useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import type { JSX } from 'react';
 import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import type { Oshi } from '../../models/Oshi';
+import { Button } from '../common/Button';
 
 const ACCOUNT_NAME = '仮アカウント';
 const OSHI_STORAGE_KEY = 'oshi_storage_key';
 
 export const Home = (): JSX.Element => {
+	const router = useRouter();
 	const [oshis, setOshis] = useState<Oshi[]>([]);
 
 	useFocusEffect(
@@ -52,9 +54,11 @@ export const Home = (): JSX.Element => {
 				/>
 			</View>
 			<View>
-				<Link href="/oshi/add" style={styles.addButton}>
-					<Text style={styles.addButtonText}>追加</Text>
-				</Link>
+				<Button 
+					title="追加" 
+					onPress={() => router.push('/oshi/add')}
+					size="large"
+				/>
 			</View>
 		</View>
 	);
@@ -90,19 +94,4 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		fontWeight: 'bold'
 	},
-	addButton: {
-		backgroundColor: '#007AFF',
-		padding: 16,
-		borderRadius: 5,
-		elevation: 5,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84
-	},
-	addButtonText: {
-		color: '#fff',
-		fontSize: 18,
-		fontWeight: 'bold'
-	}
 });

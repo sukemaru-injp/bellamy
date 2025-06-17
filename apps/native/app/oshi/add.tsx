@@ -1,10 +1,11 @@
 import type { Oshi } from '@/models/Oshi';
+import { colors } from '@/styles/foundation';
+import { Button } from '@/components/common/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import type { JSX } from 'react';
 import { useState } from 'react';
 import {
-	Button,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -97,7 +98,8 @@ const AddOshiScreen = (): JSX.Element => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 16
+		padding: 16,
+		backgroundColor: colors.background
 	},
 	label: {
 		fontSize: 16,
