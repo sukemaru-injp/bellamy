@@ -1,17 +1,10 @@
 import type { Oshi } from '@/models/Oshi';
 import { colors } from '@/styles/foundation';
-import { Picker } from '@react-native-picker/picker';
-import { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import type { MarkingProps } from 'react-native-calendars/src/calendar/day/marking';
 import type { Theme } from 'react-native-calendars/src/types';
-
-const oshisData: Oshi[] = [
-	{ id: 'conan', name: '相棒', themeColor: 'blue' },
-	{ id: 'aimyon', name: 'あいみょん', themeColor: 'green' },
-	{ id: 'sakurazaka', name: '櫻坂46', themeColor: 'pink' }
-];
 
 const oshiMarkedDates: Record<Oshi['id'], { [key: string]: MarkingProps }> = {
 	conan: {
@@ -69,76 +62,34 @@ const getTheme = (themeColor: string): Theme => ({
 	}
 });
 
-export default function CalendarView() {
-	const [selectedOshiId, setSelectedOshiId] = useState<string>(oshisData[1].id);
+type Props = {
+	selectedOshi?: Oshi;
+	onClickDay: (d: Date) => void;
+};
 
-	const selectedOshi = useMemo(
-		() => oshisData.find((o) => o.id === selectedOshiId),
-		[selectedOshiId]
-	);
-
+export default function CalendarView(props: Props) {
 	const theme = useMemo(() => {
-		return getTheme(selectedOshi?.themeColor ?? 'blue');
-	}, [selectedOshi]);
+		return getTheme(props.selectedOshi?.themeColor ?? 'blue');
+	}, [props.selectedOshi]);
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.oshiSelectorContainer}>
-				<Picker
-					selectedValue={selectedOshiId}
-					style={styles.picker}
-					itemStyle={styles.pickerItem}
-					onValueChange={(itemValue) => {
-						console.log('Selected Oshi ID:', itemValue);
-						setSelectedOshiId(itemValue);
-					}}
-					dropdownIconColor={selectedOshi?.themeColor}
-				>
-					{oshisData.map((oshi) => (
-						<Picker.Item
-							key={oshi.id}
-							label={oshi.name}
-							value={oshi.id}
-							color={oshi.themeColor}
-						/>
-					))}
-				</Picker>
-			</View>
-			<Calendar
-				key={selectedOshiId}
-				style={styles.calendar}
-				onDayPress={(day) => {
-					console.log('selected day', day);
-				}}
-				markedDates={oshiMarkedDates[selectedOshiId]}
-				theme={theme}
-				showSixWeeks
-				hideExtraDays={false}
-			/>
-		</View>
+		<Calendar
+			key={props.selectedOshi?.id ?? 'none'}
+			style={styles.calendar}
+			onDayPress={(day) => {
+				props.onClickDay(new Date(day.dateString));
+			}}
+			markedDates={
+				props.selectedOshi ? oshiMarkedDates[props.selectedOshi.id] : undefined
+			}
+			theme={theme}
+			showSixWeeks
+			hideExtraDays={false}
+		/>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: colors.background
-	},
-	oshiSelectorContainer: {
-		paddingVertical: 10,
-		borderBottomWidth: 1,
-		borderColor: colors.background,
-		justifyContent: 'center'
-	},
-	picker: {
-		height: 55,
-		width: '90%',
-		alignSelf: 'center'
-	},
-	pickerItem: {
-		color: '#fff',
-		backgroundColor: colors.background
-	},
 	calendar: {
 		borderTopWidth: 1,
 		paddingTop: 5,
