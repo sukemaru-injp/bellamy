@@ -1,6 +1,7 @@
 import type { Oshi } from '@/models/Oshi';
 import { colors } from '@/styles/foundation';
 import { Button } from '@/components/common/Button';
+import { Input } from '@/components/common/Input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import type { JSX } from 'react';
@@ -9,7 +10,6 @@ import {
 	ScrollView,
 	StyleSheet,
 	Text,
-	TextInput,
 	TouchableOpacity,
 	View
 } from 'react-native';
@@ -58,17 +58,15 @@ const AddOshiScreen = (): JSX.Element => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.label}>名前</Text>
-			<TextInput
-				style={styles.input}
+			<Input
+				label="名前"
 				value={name}
 				onChangeText={setName}
 				placeholder="推しの名前"
 			/>
 
-			<Text style={styles.label}>メモ</Text>
-			<TextInput
-				style={styles.input}
+			<Input
+				label="メモ"
 				value={memo}
 				onChangeText={setMemo}
 				placeholder="memo"
@@ -105,14 +103,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 		marginBottom: 8
-	},
-	input: {
-		borderWidth: 1,
-		borderColor: '#ccc',
-		borderRadius: 8,
-		padding: 12,
-		marginBottom: 16,
-		fontSize: 16
 	},
 	colorContainer: {
 		flexDirection: 'row',
