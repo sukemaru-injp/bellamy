@@ -1,8 +1,8 @@
 {
-  "servers": {
-    "functional-mcp": {
-      "type": "http",
-      "url": "http://localhost:5503/mcp"
-    }
-  }
+	"servers": {
+		"functional-mcp": {
+			"type": "http",
+			"url": "http://localhost:5503/mcp"
+		}
+	}
 }
