@@ -24,22 +24,26 @@ describe('Either', () => {
 				() => 42,
 				(error) => `Error: ${error}`
 			);
-			
+
 			expect(either.isRight()).toBe(true);
 			expect(either.getOrElse(0)).toBe(42);
 		});
 
 		it('should return Left when function throws', () => {
 			const either = Either.tryCatch(
-				() => { throw new Error('test error'); },
+				() => {
+					throw new Error('test error');
+				},
 				(error) => `Error: ${error}`
 			);
-			
+
 			expect(either.isLeft()).toBe(true);
-			expect(either.fold(
-				(left) => left,
-				(right) => `Right: ${right}`
-			)).toContain('Error: Error: test error');
+			expect(
+				either.fold(
+					(left) => left,
+					(right) => `Right: ${right}`
+				)
+			).toContain('Error: Error: test error');
 		});
 	});
 
@@ -49,22 +53,26 @@ describe('Either', () => {
 				async () => 42,
 				(error) => `Error: ${error}`
 			);
-			
+
 			expect(either.isRight()).toBe(true);
 			expect(either.getOrElse(0)).toBe(42);
 		});
 
 		it('should return Left when async function throws', async () => {
 			const either = await Either.tryCatchAsync(
-				async () => { throw new Error('async error'); },
+				async () => {
+					throw new Error('async error');
+				},
 				(error) => `Error: ${error}`
 			);
-			
+
 			expect(either.isLeft()).toBe(true);
-			expect(either.fold(
-				(left) => left,
-				(right) => `Right: ${right}`
-			)).toContain('Error: Error: async error');
+			expect(
+				either.fold(
+					(left) => left,
+					(right) => `Right: ${right}`
+				)
+			).toContain('Error: Error: async error');
 		});
 
 		it('should return Left when async function rejects', async () => {
@@ -72,12 +80,14 @@ describe('Either', () => {
 				async () => Promise.reject(new Error('rejection error')),
 				(error) => `Error: ${error}`
 			);
-			
+
 			expect(either.isLeft()).toBe(true);
-			expect(either.fold(
-				(left) => left,
-				(right) => `Right: ${right}`
-			)).toContain('Error: Error: rejection error');
+			expect(
+				either.fold(
+					(left) => left,
+					(right) => `Right: ${right}`
+				)
+			).toContain('Error: Error: rejection error');
 		});
 	});
 
@@ -87,24 +97,28 @@ describe('Either', () => {
 		describe('map', () => {
 			it('should not transform value when Left', () => {
 				const mapped = leftEither.map((x) => x * 2);
-				
+
 				expect(mapped.isLeft()).toBe(true);
-				expect(mapped.fold(
-					(left) => left,
-					(right) => `Right: ${right}`
-				)).toBe('error');
+				expect(
+					mapped.fold(
+						(left) => left,
+						(right) => `Right: ${right}`
+					)
+				).toBe('error');
 			});
 		});
 
 		describe('mapLeft', () => {
 			it('should transform left value when Left', () => {
 				const mapped = leftEither.mapLeft((error) => `Mapped: ${error}`);
-				
+
 				expect(mapped.isLeft()).toBe(true);
-				expect(mapped.fold(
-					(left) => left,
-					(right) => `Right: ${right}`
-				)).toBe('Mapped: error');
+				expect(
+					mapped.fold(
+						(left) => left,
+						(right) => `Right: ${right}`
+					)
+				).toBe('Mapped: error');
 			});
 		});
 
@@ -112,13 +126,15 @@ describe('Either', () => {
 			it('should not call function when Left', () => {
 				const mockFn = vi.fn(() => Either.right<string, string>('success'));
 				const result = leftEither.flatMap(mockFn);
-				
+
 				expect(mockFn).not.toHaveBeenCalled();
 				expect(result.isLeft()).toBe(true);
-				expect(result.fold(
-					(left) => left,
-					(right) => right
-				)).toBe('error');
+				expect(
+					result.fold(
+						(left) => left,
+						(right) => right
+					)
+				).toBe('error');
 			});
 		});
 
@@ -126,9 +142,9 @@ describe('Either', () => {
 			it('should call leftF when Left', () => {
 				const leftFn = vi.fn((left: string) => `Left: ${left}`);
 				const rightFn = vi.fn((right: number) => `Right: ${right}`);
-				
+
 				const result = leftEither.fold(leftFn, rightFn);
-				
+
 				expect(leftFn).toHaveBeenCalledWith('error');
 				expect(rightFn).not.toHaveBeenCalled();
 				expect(result).toBe('Left: error');
@@ -149,7 +165,9 @@ describe('Either', () => {
 
 			it('should throw custom error when Left and errorF provided', () => {
 				const errorF = (left: string) => new Error(`Custom error: ${left}`);
-				expect(() => leftEither.getOrElseThrow(errorF)).toThrow('Custom error: error');
+				expect(() => leftEither.getOrElseThrow(errorF)).toThrow(
+					'Custom error: error'
+				);
 			});
 		});
 	});
@@ -160,7 +178,7 @@ describe('Either', () => {
 		describe('map', () => {
 			it('should transform value when Right', () => {
 				const mapped = rightEither.map((x) => x * 2);
-				
+
 				expect(mapped.isRight()).toBe(true);
 				expect(mapped.getOrElse(0)).toBe(84);
 			});
@@ -169,7 +187,7 @@ describe('Either', () => {
 		describe('mapLeft', () => {
 			it('should not transform left value when Right', () => {
 				const mapped = rightEither.mapLeft((error) => `Mapped: ${error}`);
-				
+
 				expect(mapped.isRight()).toBe(true);
 				expect(mapped.getOrElse(0)).toBe(42);
 			});
@@ -177,20 +195,26 @@ describe('Either', () => {
 
 		describe('flatMap', () => {
 			it('should call function and return result when Right', () => {
-				const result = rightEither.flatMap((x) => Either.right<string, string>(`Result: ${x}`));
-				
+				const result = rightEither.flatMap((x) =>
+					Either.right<string, string>(`Result: ${x}`)
+				);
+
 				expect(result.isRight()).toBe(true);
 				expect(result.getOrElse('')).toBe('Result: 42');
 			});
 
 			it('should call function and return Left when flatMap returns Left', () => {
-				const result = rightEither.flatMap(() => Either.left<string, string>('flatMap error'));
-				
+				const result = rightEither.flatMap(() =>
+					Either.left<string, string>('flatMap error')
+				);
+
 				expect(result.isLeft()).toBe(true);
-				expect(result.fold(
-					(left) => left,
-					(right) => right
-				)).toBe('flatMap error');
+				expect(
+					result.fold(
+						(left) => left,
+						(right) => right
+					)
+				).toBe('flatMap error');
 			});
 		});
 
@@ -198,9 +222,9 @@ describe('Either', () => {
 			it('should call rightF when Right', () => {
 				const leftFn = vi.fn((left: string) => `Left: ${left}`);
 				const rightFn = vi.fn((right: number) => `Right: ${right}`);
-				
+
 				const result = rightEither.fold(leftFn, rightFn);
-				
+
 				expect(leftFn).not.toHaveBeenCalled();
 				expect(rightFn).toHaveBeenCalledWith(42);
 				expect(result).toBe('Right: 42');
@@ -231,22 +255,27 @@ describe('Either', () => {
 	describe('Chaining operations', () => {
 		it('should chain map operations on Right', () => {
 			const result = Either.right<string, number>(5)
-				.map(x => x * 2)
-				.map(x => x + 1)
-				.map(x => x.toString());
-			
+				.map((x) => x * 2)
+				.map((x) => x + 1)
+				.map((x) => x.toString());
+
 			expect(result.isRight()).toBe(true);
 			expect(result.getOrElse('')).toBe('11');
 		});
 
 		it('should stop chaining on Left', () => {
 			const result = Either.left<string, number>('error')
-				.map(x => x * 2)
-				.map(x => x + 1)
-				.map(x => x.toString());
-			
+				.map((x) => x * 2)
+				.map((x) => x + 1)
+				.map((x) => x.toString());
+
 			expect(result.isLeft()).toBe(true);
-			expect(result.fold(left => left, right => right)).toBe('error');
+			expect(
+				result.fold(
+					(left) => left,
+					(right) => right
+				)
+			).toBe('error');
 		});
 
 		it('should chain flatMap operations', () => {
@@ -256,9 +285,9 @@ describe('Either', () => {
 			};
 
 			const result = Either.right<string, number>(20)
-				.flatMap(x => divide(x, 4))
-				.flatMap(x => divide(x, 2));
-			
+				.flatMap((x) => divide(x, 4))
+				.flatMap((x) => divide(x, 2));
+
 			expect(result.isRight()).toBe(true);
 			expect(result.getOrElse(0)).toBe(2.5);
 		});
@@ -270,22 +299,32 @@ describe('Either', () => {
 			};
 
 			const result = Either.right<string, number>(20)
-				.flatMap(x => divide(x, 4))
-				.flatMap(x => divide(x, 0))
-				.flatMap(x => divide(x, 2));
-			
+				.flatMap((x) => divide(x, 4))
+				.flatMap((x) => divide(x, 0))
+				.flatMap((x) => divide(x, 2));
+
 			expect(result.isLeft()).toBe(true);
-			expect(result.fold(left => left, right => right.toString())).toBe('Division by zero');
+			expect(
+				result.fold(
+					(left) => left,
+					(right) => right.toString()
+				)
+			).toBe('Division by zero');
 		});
 	});
 
 	describe('Type guards', () => {
 		it('should correctly identify Left instance', () => {
 			const either = Either.left<string, number>('error');
-			
+
 			if (either.isLeft()) {
 				// TypeScript should infer this as Left<string, number>
-				expect(either.fold(left => left, right => right.toString())).toBe('error');
+				expect(
+					either.fold(
+						(left) => left,
+						(right) => right.toString()
+					)
+				).toBe('error');
 			} else {
 				// This should not be reached
 				expect(true).toBe(false);
@@ -294,7 +333,7 @@ describe('Either', () => {
 
 		it('should correctly identify Right instance', () => {
 			const either = Either.right<string, number>(42);
-			
+
 			if (either.isRight()) {
 				// TypeScript should infer this as Right<string, number>
 				expect(either.getOrElse(0)).toBe(42);
