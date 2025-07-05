@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "functional-mcp": {
+      "type": "http",
+      "url": "http://localhost:5503/mcp"
+    }
+  }
+}

@@ -1,9 +1,10 @@
-import type { Oshi } from '@/models/Oshi';
-import { colors } from '@/styles/foundation';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
+import type { Oshi } from '@/models/Oshi';
+import { colors } from '@/styles/foundation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { Result, err, ok } from 'neverthrow';
 import type { JSX } from 'react';
 import { useState } from 'react';
 import {
@@ -31,10 +32,48 @@ const AddOshiScreen = (): JSX.Element => {
 	const [themeColor, setThemeColor] = useState<(typeof THEME_COLORS)[number]>(
 		THEME_COLORS[0]
 	);
+	const [nameError, setNameError] = useState('');
+	const [memoError, setMemoError] = useState('');
+
+	const validateName = (value: string): Result<string, string> => {
+		if (!value.trim()) {
+			return err('名前は必須です');
+		}
+		if (value.length > 20) {
+			return err('名前は20文字以内で入力してください');
+		}
+		return ok(value);
+	};
+
+	const validateMemo = (value: string): Result<string, string> => {
+		if (value.length > 400) {
+			return err('メモは400文字以内で入力してください');
+		}
+		return ok(value);
+	};
+
+	const handleNameChange = (value: string) => {
+		setName(value);
+		const result = validateName(value);
+		setNameError(result.isErr() ? result.error : '');
+	};
+
+	const handleMemoChange = (value: string) => {
+		setMemo(value);
+		const result = validateMemo(value);
+		setMemoError(result.isErr() ? result.error : '');
+	};
 
 	const handleSave = async () => {
-		if (!name.trim()) {
-			console.log('Name is required');
+		const nameResult = validateName(name);
+		const memoResult = validateMemo(memo);
+
+		const combinedResult = Result.combine([nameResult, memoResult]);
+
+		if (combinedResult.isErr()) {
+			const [nameError, memoError] = combinedResult.error;
+			setNameError(nameError || '');
+			setMemoError(memoError || '');
 			return;
 		}
 
@@ -61,17 +100,19 @@ const AddOshiScreen = (): JSX.Element => {
 			<Input
 				label="名前"
 				value={name}
-				onChangeText={setName}
+				onChangeText={handleNameChange}
 				placeholder="推しの名前"
 			/>
+			{nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
 
 			<Input
 				label="メモ"
 				value={memo}
-				onChangeText={setMemo}
+				onChangeText={handleMemoChange}
 				placeholder="memo"
 				multiline
 			/>
+			{memoError ? <Text style={styles.errorText}>{memoError}</Text> : null}
 
 			<Text style={styles.label}>テーマカラー</Text>
 			<View style={styles.colorContainer}>
@@ -117,7 +158,23 @@ const styles = StyleSheet.create({
 		borderColor: 'transparent'
 	},
 	selectedColor: {
-		borderColor: '#000'
+		borderColor: '#333',
+		borderWidth: 3,
+		transform: [{ scale: 1.1 }],
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5
+	},
+	errorText: {
+		color: 'red',
+		fontSize: 14,
+		marginTop: 4,
+		marginBottom: 8
 	}
 });
 

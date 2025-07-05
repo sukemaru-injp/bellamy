@@ -54,8 +54,8 @@ export const Home = (): JSX.Element => {
 				/>
 			</View>
 			<View>
-				<Button 
-					title="追加" 
+				<Button
+					title="追加"
 					onPress={() => router.push('/oshi/add')}
 					size="large"
 				/>
@@ -93,5 +93,5 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#fff',
 		fontWeight: 'bold'
-	},
+	}
 });
