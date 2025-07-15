@@ -2,7 +2,7 @@
 	"servers": {
 		"functional-mcp": {
 			"type": "http",
-			"url": "http://localhost:5503/mcp"
+			"url": "https://slim-donkey-12-k44gnq0bgacy.deno.dev/mcp"
 		}
 	}
 }

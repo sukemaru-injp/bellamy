@@ -1,37 +1,7 @@
-import type { Oshi } from '@/models/Oshi';
 import { colors } from '@/styles/foundation';
-import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import type { MarkingProps } from 'react-native-calendars/src/calendar/day/marking';
 import type { Theme } from 'react-native-calendars/src/types';
-
-const oshiMarkedDates: Record<Oshi['id'], { [key: string]: MarkingProps }> = {
-	conan: {
-		// idをキーにする
-		'2025-07-10': {
-			selected: true,
-			marked: true
-		},
-		'2025-07-11': { marked: true }
-	},
-	aimyon: {
-		// idをキーにする
-		'2025-08-15': {
-			selected: true,
-			marked: true
-		},
-		'2025-08-16': { marked: true, dotColor: 'orange' }
-	},
-	sakurazaka: {
-		// idをキーにする
-		'2025-09-20': {
-			selected: true,
-			marked: true
-		},
-		'2025-09-21': { marked: true, dotColor: 'purple', activeOpacity: 0 }
-	}
-};
 
 const getTheme = (themeColor: string): Theme => ({
 	backgroundColor: colors.background,
@@ -63,26 +33,17 @@ const getTheme = (themeColor: string): Theme => ({
 });
 
 type Props = {
-	selectedOshi?: Oshi;
 	onClickDay: (d: Date) => void;
 };
 
 export default function CalendarView(props: Props) {
-	const theme = useMemo(() => {
-		return getTheme(props.selectedOshi?.themeColor ?? 'blue');
-	}, [props.selectedOshi]);
-
 	return (
 		<Calendar
-			key={props.selectedOshi?.id ?? 'none'}
 			style={styles.calendar}
 			onDayPress={(day) => {
 				props.onClickDay(new Date(day.dateString));
 			}}
-			markedDates={
-				props.selectedOshi ? oshiMarkedDates[props.selectedOshi.id] : undefined
-			}
-			theme={theme}
+			theme={getTheme('#cc0000')} // Default theme color, can be replaced with props.selectedOshi?.themeColor
 			showSixWeeks
 			hideExtraDays={false}
 		/>
