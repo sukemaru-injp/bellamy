@@ -1,9 +1,16 @@
-import type { JSX } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import type { Meal } from '@/models';
 import { colors } from '@/styles/foundation';
 import Feather from '@expo/vector-icons/Feather';
-import type { Meal } from '@/models';
+import { useRouter } from 'expo-router';
+import type { JSX } from 'react';
+import {
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 
 export const Home = (): JSX.Element => {
 	const router = useRouter();
@@ -32,16 +39,20 @@ export const Home = (): JSX.Element => {
 		}
 	];
 
-	const todayMealsCount = recentMeals.filter(meal => 
-		meal.datetime.toDateString() === new Date().toDateString()
+	const todayMealsCount = recentMeals.filter(
+		(meal) => meal.datetime.toDateString() === new Date().toDateString()
 	).length;
 
 	const getMealTypeLabel = (mealType: Meal['mealType']) => {
 		switch (mealType) {
-			case 'breakfast': return '朝食';
-			case 'lunch': return '昼食';
-			case 'dinner': return '夕食';
-			case 'snack': return 'おやつ';
+			case 'breakfast':
+				return '朝食';
+			case 'lunch':
+				return '昼食';
+			case 'dinner':
+				return '夕食';
+			case 'snack':
+				return 'おやつ';
 		}
 	};
 
@@ -53,11 +64,11 @@ export const Home = (): JSX.Element => {
 
 		if (diffDays > 0) {
 			return `${diffDays}日前`;
-		} else if (diffHours > 0) {
-			return `${diffHours}時間前`;
-		} else {
-			return '今';
 		}
+		if (diffHours > 0) {
+			return `${diffHours}時間前`;
+		}
+		return '今';
 	};
 
 	return (
@@ -85,14 +96,14 @@ export const Home = (): JSX.Element => {
 				<View style={styles.section}>
 					<Text style={styles.sectionTitle}>クイックアクション</Text>
 					<View style={styles.actionsContainer}>
-						<TouchableOpacity 
+						<TouchableOpacity
 							style={styles.actionButton}
 							onPress={() => router.push('/camera')}
 						>
 							<Feather name="camera" size={24} color={colors.text.inverse} />
 							<Text style={styles.actionButtonText}>写真を撮る</Text>
 						</TouchableOpacity>
-						<TouchableOpacity 
+						<TouchableOpacity
 							style={styles.actionButtonSecondary}
 							onPress={() => router.push('/recommendations')}
 						>
@@ -113,18 +124,22 @@ export const Home = (): JSX.Element => {
 
 					{recentMeals.map((meal) => (
 						<View key={meal.id} style={styles.mealCard}>
-							<Image 
-								source={{ uri: meal.photoUri }} 
+							<Image
+								source={{ uri: meal.photoUri }}
 								style={styles.mealImage}
 								defaultSource={require('@/assets/images/adaptive-icon.png')}
 							/>
 							<View style={styles.mealInfo}>
 								<View style={styles.mealHeader}>
-									<Text style={styles.mealType}>{getMealTypeLabel(meal.mealType)}</Text>
-									<Text style={styles.mealTime}>{formatRelativeTime(meal.datetime)}</Text>
+									<Text style={styles.mealType}>
+										{getMealTypeLabel(meal.mealType)}
+									</Text>
+									<Text style={styles.mealTime}>
+										{formatRelativeTime(meal.datetime)}
+									</Text>
 								</View>
 								<Text style={styles.mealFoods}>
-									{meal.recognizedFoods.map(food => food.name).join(', ')}
+									{meal.recognizedFoods.map((food) => food.name).join(', ')}
 								</Text>
 							</View>
 						</View>

@@ -1,7 +1,11 @@
 import type { Food, NutritionInfo } from './Food';
 
 export interface RecommendationReason {
-	type: 'same_ingredients' | 'different_ingredients' | 'flavor_variation' | 'nutritional_balance';
+	type:
+		| 'same_ingredients'
+		| 'different_ingredients'
+		| 'flavor_variation'
+		| 'nutritional_balance';
 	description: string;
 }
 

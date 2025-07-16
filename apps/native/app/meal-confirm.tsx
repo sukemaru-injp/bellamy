@@ -1,15 +1,26 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import type { Food, Meal } from '@/models';
 import { colors } from '@/styles/foundation';
 import Feather from '@expo/vector-icons/Feather';
-import type { Food, Meal } from '@/models';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+	Alert,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	View
+} from 'react-native';
 
 export default function MealConfirmScreen() {
 	const { photoUri } = useLocalSearchParams<{ photoUri: string }>();
 	const router = useRouter();
 	const [recognizedFoods, setRecognizedFoods] = useState<Food[]>([]);
-	const [mealType, setMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('lunch');
+	const [mealType, setMealType] = useState<
+		'breakfast' | 'lunch' | 'dinner' | 'snack'
+	>('lunch');
 	const [notes, setNotes] = useState('');
 	const [isAnalyzing, setIsAnalyzing] = useState(true);
 
@@ -21,7 +32,7 @@ export default function MealConfirmScreen() {
 
 	const analyzePhoto = async () => {
 		setIsAnalyzing(true);
-		
+
 		// Mock AI analysis - replace with actual Gemini API call
 		setTimeout(() => {
 			const mockFoods: Food[] = [
@@ -68,15 +79,15 @@ export default function MealConfirmScreen() {
 	};
 
 	const updateFoodName = (foodId: string, newName: string) => {
-		setRecognizedFoods(prev => 
-			prev.map(food => 
+		setRecognizedFoods((prev) =>
+			prev.map((food) =>
 				food.id === foodId ? { ...food, name: newName } : food
 			)
 		);
 	};
 
 	const removeFood = (foodId: string) => {
-		setRecognizedFoods(prev => prev.filter(food => food.id !== foodId));
+		setRecognizedFoods((prev) => prev.filter((food) => food.id !== foodId));
 	};
 
 	const addFood = () => {
@@ -86,7 +97,7 @@ export default function MealConfirmScreen() {
 			category: 'other',
 			confidence: 1.0
 		};
-		setRecognizedFoods(prev => [...prev, newFood]);
+		setRecognizedFoods((prev) => [...prev, newFood]);
 	};
 
 	const saveMeal = () => {
@@ -106,7 +117,7 @@ export default function MealConfirmScreen() {
 
 		// Save meal logic here (integrate with Convex later)
 		console.log('Saving meal:', meal);
-		
+
 		Alert.alert('保存完了', '食事が保存されました', [
 			{ text: 'OK', onPress: () => router.back() }
 		]);
@@ -132,12 +143,17 @@ export default function MealConfirmScreen() {
 				</TouchableOpacity>
 				<Text style={styles.title}>食事を確認</Text>
 				<TouchableOpacity onPress={saveMeal} disabled={isAnalyzing}>
-					<Text style={[styles.saveButton, isAnalyzing && styles.disabled]}>保存</Text>
+					<Text style={[styles.saveButton, isAnalyzing && styles.disabled]}>
+						保存
+					</Text>
 				</TouchableOpacity>
 			</View>
 
 			<ScrollView style={styles.content}>
-				<Image source={{ uri: decodeURIComponent(photoUri) }} style={styles.photo} />
+				<Image
+					source={{ uri: decodeURIComponent(photoUri) }}
+					style={styles.photo}
+				/>
 
 				{isAnalyzing ? (
 					<View style={styles.analyzingContainer}>
@@ -147,16 +163,23 @@ export default function MealConfirmScreen() {
 					<>
 						<View style={styles.section}>
 							<Text style={styles.sectionTitle}>認識された食べ物</Text>
-							{recognizedFoods.map((food, index) => (
+							{recognizedFoods.map((food, _index) => (
 								<View key={food.id} style={styles.foodItem}>
-									<View style={[styles.categoryIndicator, { backgroundColor: getCategoryColor(food.category) }]} />
+									<View
+										style={[
+											styles.categoryIndicator,
+											{ backgroundColor: getCategoryColor(food.category) }
+										]}
+									/>
 									<TextInput
 										style={styles.foodNameInput}
 										value={food.name}
 										onChangeText={(text) => updateFoodName(food.id, text)}
 										placeholder="食べ物名"
 									/>
-									<Text style={styles.confidence}>{Math.round(food.confidence * 100)}%</Text>
+									<Text style={styles.confidence}>
+										{Math.round(food.confidence * 100)}%
+									</Text>
 									<TouchableOpacity onPress={() => removeFood(food.id)}>
 										<Feather name="trash-2" size={20} color="#ff6b6b" />
 									</TouchableOpacity>
@@ -171,25 +194,33 @@ export default function MealConfirmScreen() {
 						<View style={styles.section}>
 							<Text style={styles.sectionTitle}>食事タイプ</Text>
 							<View style={styles.mealTypeContainer}>
-								{(['breakfast', 'lunch', 'dinner', 'snack'] as const).map((type) => (
-									<TouchableOpacity
-										key={type}
-										style={[
-											styles.mealTypeButton,
-											mealType === type && styles.mealTypeButtonActive
-										]}
-										onPress={() => setMealType(type)}
-									>
-										<Text style={[
-											styles.mealTypeText,
-											mealType === type && styles.mealTypeTextActive
-										]}>
-											{type === 'breakfast' ? '朝食' : 
-											 type === 'lunch' ? '昼食' :
-											 type === 'dinner' ? '夕食' : 'おやつ'}
-										</Text>
-									</TouchableOpacity>
-								))}
+								{(['breakfast', 'lunch', 'dinner', 'snack'] as const).map(
+									(type) => (
+										<TouchableOpacity
+											key={type}
+											style={[
+												styles.mealTypeButton,
+												mealType === type && styles.mealTypeButtonActive
+											]}
+											onPress={() => setMealType(type)}
+										>
+											<Text
+												style={[
+													styles.mealTypeText,
+													mealType === type && styles.mealTypeTextActive
+												]}
+											>
+												{type === 'breakfast'
+													? '朝食'
+													: type === 'lunch'
+														? '昼食'
+														: type === 'dinner'
+															? '夕食'
+															: 'おやつ'}
+											</Text>
+										</TouchableOpacity>
+									)
+								)}
 							</View>
 						</View>
 
@@ -214,7 +245,7 @@ export default function MealConfirmScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.background,
+		backgroundColor: colors.background
 	},
 	header: {
 		flexDirection: 'row',
@@ -222,60 +253,60 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 16,
 		borderBottomWidth: 1,
-		borderBottomColor: '#e0e0e0',
+		borderBottomColor: '#e0e0e0'
 	},
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
-		color: colors.main,
+		color: colors.main
 	},
 	saveButton: {
 		color: colors.main,
 		fontWeight: 'bold',
-		fontSize: 16,
+		fontSize: 16
 	},
 	disabled: {
-		opacity: 0.5,
+		opacity: 0.5
 	},
 	content: {
-		flex: 1,
+		flex: 1
 	},
 	photo: {
 		width: '100%',
 		height: 250,
-		resizeMode: 'cover',
+		resizeMode: 'cover'
 	},
 	analyzingContainer: {
 		padding: 32,
-		alignItems: 'center',
+		alignItems: 'center'
 	},
 	analyzingText: {
 		fontSize: 16,
-		color: colors.text.secondary,
+		color: colors.text.secondary
 	},
 	section: {
 		padding: 16,
 		borderBottomWidth: 1,
-		borderBottomColor: '#f0f0f0',
+		borderBottomColor: '#f0f0f0'
 	},
 	sectionTitle: {
 		fontSize: 16,
 		fontWeight: 'bold',
 		marginBottom: 12,
-		color: colors.main,
+		color: colors.main
 	},
 	foodItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 8,
 		borderBottomWidth: 1,
-		borderBottomColor: '#f0f0f0',
+		borderBottomColor: '#f0f0f0'
 	},
 	categoryIndicator: {
 		width: 12,
 		height: 12,
 		borderRadius: 6,
-		marginRight: 12,
+		marginRight: 12
 	},
 	foodNameInput: {
 		flex: 1,
@@ -284,14 +315,14 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		paddingHorizontal: 12,
 		paddingVertical: 8,
-		marginRight: 12,
+		marginRight: 12
 	},
 	confidence: {
 		fontSize: 12,
 		color: colors.text.secondary,
 		marginRight: 12,
 		minWidth: 40,
-		textAlign: 'right',
+		textAlign: 'right'
 	},
 	addButton: {
 		flexDirection: 'row',
@@ -302,17 +333,17 @@ const styles = StyleSheet.create({
 		borderColor: colors.main,
 		borderRadius: 8,
 		borderStyle: 'dashed',
-		marginTop: 12,
+		marginTop: 12
 	},
 	addButtonText: {
 		marginLeft: 8,
 		color: colors.main,
-		fontWeight: 'bold',
+		fontWeight: 'bold'
 	},
 	mealTypeContainer: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		gap: 8,
+		gap: 8
 	},
 	mealTypeButton: {
 		paddingHorizontal: 16,
@@ -320,17 +351,17 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: colors.main,
-		backgroundColor: 'white',
+		backgroundColor: 'white'
 	},
 	mealTypeButtonActive: {
-		backgroundColor: colors.main,
+		backgroundColor: colors.main
 	},
 	mealTypeText: {
 		color: colors.main,
-		fontWeight: 'bold',
+		fontWeight: 'bold'
 	},
 	mealTypeTextActive: {
-		color: 'white',
+		color: 'white'
 	},
 	notesInput: {
 		borderWidth: 1,
@@ -339,6 +370,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 12,
 		paddingVertical: 8,
 		minHeight: 80,
-		textAlignVertical: 'top',
-	},
+		textAlignVertical: 'top'
+	}
 });
