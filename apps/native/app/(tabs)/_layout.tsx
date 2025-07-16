@@ -24,6 +24,24 @@ export default function RootLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="camera"
+				options={{
+					title: 'Camera',
+					tabBarIcon: ({ color }) => (
+						<Feather name="camera" color={color} size={24} />
+					)
+				}}
+			/>
+			<Tabs.Screen
+				name="recommendations"
+				options={{
+					title: 'Recommendations',
+					tabBarIcon: ({ color }) => (
+						<Feather name="star" color={color} size={24} />
+					)
+				}}
+			/>
+			<Tabs.Screen
 				name="calendar"
 				options={{
 					title: 'Calendar',
