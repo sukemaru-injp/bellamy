@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Bellamy is a React Native mobile app built with Expo for tracking "oshi" (favorite idols/entertainers) schedules and events. The app is structured as a monorepo using Turborepo and pnpm workspaces.
+MenuSense is a React Native mobile app built with Expo for recording daily meals through photos and providing AI-powered menu recommendations. The app uses Gemini Flash 2.5 for food recognition and analyzes eating patterns to suggest nutritionally balanced meals. The app is structured as a monorepo using Turborepo and pnpm workspaces.
 
 ## Development Commands
 
@@ -58,30 +58,33 @@ pnpm build  # Build all workspaces via Turbo
 ### App Architecture
 - **Routing**: Expo Router with file-based routing
   - Root layout: `app/_layout.tsx` (Stack navigator)
-  - Tab layout: `app/(tabs)/_layout.tsx` (Bottom tabs: Home, Calendar)
-- **Navigation**: Bottom tab navigation with Home and Calendar screens
+  - Tab layout: `app/(tabs)/_layout.tsx` (Bottom tabs: Camera, History, Analytics)
+- **Navigation**: Bottom tab navigation with Camera, History, and Analytics screens
 - **State**: Currently uses local state (no global state management yet)
 - **Styling**: Custom theme system in `styles/foundation.ts` with consistent colors
 
 ### Data Models
-- **Oshi**: Represents favorite entertainers (`models/Oshi.ts`)
-  - Properties: id, name, memo, themeColor
-- **Schedule**: Event/schedule data (`models/Schedule.ts`)  
-  - Properties: id, title, oshiId, datetime, category, notifications, repeat settings
-  - Categories: live, stream, event, release, other
+- **Meal**: Represents recorded meals (`models/Meal.ts`)
+  - Properties: id, photoUri, recognizedFoods, datetime, nutrition, notes
+- **Food**: Individual food items (`models/Food.ts`)
+  - Properties: id, name, category, nutrition, confidence
+- **Recommendation**: AI-generated menu suggestions (`models/Recommendation.ts`)
+  - Properties: id, suggestedFoods, reason, nutritionalBalance, timestamp
 
 ### Key Components
-- **CalendarView**: Main calendar interface with oshi-specific theming
-  - Uses react-native-calendars
-  - Dynamic theming based on selected oshi
-  - Hardcoded sample data (oshisData, oshiMarkedDates)
+- **CameraView**: Main photo capture interface for meal recording
+  - Uses expo-camera for photo capture
+  - Integrates with Gemini Flash 2.5 for food recognition
+- **HistoryView**: Displays past meals and eating patterns
+- **AnalyticsView**: Shows nutritional analysis and recommendations
 
 ### Technology Stack
 - React Native with Expo SDK ~53
 - TypeScript throughout
 - Biome for linting/formatting
 - React Navigation for tab navigation
-- react-native-calendars for calendar functionality
+- Expo Camera for photo capture
+- Gemini Flash 2.5 for AI food recognition
 - Expo Router for file-based routing
 
 ## Development Notes
@@ -94,11 +97,12 @@ pnpm build  # Build all workspaces via Turbo
 
 ### Theming
 - Colors defined in `styles/foundation.ts`
-- Each oshi has a themeColor that affects calendar appearance
+- Food category-based color coding for visual organization
 - Main theme colors: `colors.main` (#f5b08b), `colors.background` (#fef7e4)
 
 ### Current Limitations
 - Sample data is hardcoded in components
 - No persistent storage implementation yet
-- No actual schedule creation/editing functionality
-- No notification system implementation
+- No actual AI integration with Gemini Flash 2.5 yet
+- No nutrition analysis functionality implemented
+- No recommendation engine implementation
