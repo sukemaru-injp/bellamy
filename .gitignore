@@ -1,5 +1,5 @@
-/node_modules
 /.turbo
 /dist
 /.expo
 .DS_Store
+node_modules
