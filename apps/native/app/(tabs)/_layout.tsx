@@ -10,8 +10,14 @@ export default function RootLayout() {
 					backgroundColor: colors.background
 				},
 				headerStyle: {
-					backgroundColor: colors.background
-				}
+					backgroundColor: colors.background,
+					height: 110
+				},
+				headerTitleStyle: {
+					fontSize: 18,
+					color: colors.secondary
+				},
+				headerTitleAlign: 'center'
 			}}
 		>
 			<Tabs.Screen
