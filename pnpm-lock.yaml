@@ -116,6 +116,9 @@ importers:
       react-native-screens:
         specifier: ~4.13.1
         version: 4.13.1(react-native@0.80.1(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.1.0))(react@19.1.0)
+      react-native-url-polyfill:
+        specifier: ^2.0.0
+        version: 2.0.0(react-native@0.80.1(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.1.0))
       react-native-web:
         specifier: ~0.20.0
         version: 0.20.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4045,6 +4048,11 @@ packages:
 
   react-native-swipe-gestures@1.0.5:
     resolution: {integrity: sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==}
+
+  react-native-url-polyfill@2.0.0:
+    resolution: {integrity: sha512-My330Do7/DvKnEvwQc0WdcBnFPploYKp9CYlefDXzIdEaA+PAhDYllkvGeEroEzvc4Kzzj2O4yVdz8v6fjRvhA==}
+    peerDependencies:
+      react-native: '*'
 
   react-native-web@0.20.0:
     resolution: {integrity: sha512-OOSgrw+aON6R3hRosCau/xVxdLzbjEcsLysYedka0ZON4ZZe6n9xgeN9ZkoejhARM36oTlUgHIQqxGutEJ9Wxg==}
@@ -9517,6 +9525,11 @@ snapshots:
       warn-once: 0.1.1
 
   react-native-swipe-gestures@1.0.5: {}
+
+  react-native-url-polyfill@2.0.0(react-native@0.80.1(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.1.0)):
+    dependencies:
+      react-native: 0.80.1(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.1.0)
+      whatwg-url-without-unicode: 8.0.0-3
 
   react-native-web@0.20.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
