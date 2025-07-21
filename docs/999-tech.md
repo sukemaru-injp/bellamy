@@ -17,11 +17,12 @@
   - ストレージ機能
 
 ### 認証
-- **Clerk**: ユーザー認証・管理サービス
-  - ソーシャルログイン対応
+- **Supabase Auth**: ユーザー認証・管理サービス
+  - ソーシャルログイン対応（Google、Apple、GitHub等）
   - セキュアな認証フロー
-  - ユーザー管理機能
+  - JWT トークンベース認証
   - React Native SDK
+  - Row Level Security統合
 
 ### AI・機械学習
 - **Google Gemini 2.5**: 画像解析・自然言語処理
@@ -34,13 +35,15 @@
 
 ### テーブル構成
 
-#### users
+#### users (Supabase Auth自動生成)
 ```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  clerk_id TEXT UNIQUE NOT NULL,
-  email TEXT NOT NULL,
+-- Supabase Authが自動生成するauth.usersテーブルを使用
+-- 追加のプロフィール情報用テーブル
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email TEXT,
   name TEXT,
+  avatar_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -50,7 +53,7 @@ CREATE TABLE users (
 ```sql
 CREATE TABLE meals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   image_url TEXT,
   menu_items TEXT[],
   ingredients TEXT[],
@@ -66,7 +69,7 @@ CREATE TABLE meals (
 ```sql
 CREATE TABLE recommendation_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
   preferences JSONB DEFAULT '{}',
   excluded_ingredients TEXT[],
   preferred_cuisines TEXT[],
@@ -93,9 +96,17 @@ CREATE TABLE recommendation_settings (
 #### RLS ポリシー
 ```sql
 -- ユーザーは自分のデータのみアクセス可能
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can only access their own profile" ON profiles
+  FOR ALL USING (auth.uid() = id);
+
 ALTER TABLE meals ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can only access their own meals" ON meals
-  FOR ALL USING (auth.uid()::text = (SELECT clerk_id FROM users WHERE id = user_id));
+  FOR ALL USING (auth.uid() = user_id);
+
+ALTER TABLE recommendation_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can only access their own settings" ON recommendation_settings
+  FOR ALL USING (auth.uid() = user_id);
 ```
 
 ## 外部API統合
@@ -115,17 +126,20 @@ interface GeminiAnalysisResponse {
 }
 ```
 
-### Clerk API
+### Supabase Auth API
 - ユーザー認証状態の管理
 - プロフィール情報の取得
 - セッション管理
+- ソーシャルログイン
+- パスワードリセット
 
 ## セキュリティ
 
 ### 認証・認可
-- Clerk JWTトークンによる認証
+- Supabase Auth JWTトークンによる認証
 - Supabase RLS (Row Level Security) による認可
 - ユーザーデータの分離
+- 統合された認証・認可システム
 
 ### データ保護
 - 画像データの暗号化保存
@@ -154,21 +168,6 @@ interface GeminiAnalysisResponse {
 - TypeScript
 - Biome (リンター・フォーマッター)
 
-### 環境変数
-```env
-# Supabase
-EXPO_PUBLIC_SUPABASE_URL=
-EXPO_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-
-# Clerk
-EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-
-# Gemini AI
-GEMINI_API_KEY=
-```
-
 ## デプロイ戦略
 
 ### モバイルアプリ
@@ -184,7 +183,7 @@ GEMINI_API_KEY=
 
 ### エラー追跡
 - Supabase ログ監視
-- Clerk認証ログ
+- Supabase Auth認証ログ
 - アプリケーションエラー監視
 
 ### パフォーマンス監視
